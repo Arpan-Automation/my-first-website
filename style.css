@@ -3,13 +3,29 @@ body {
     font-family: Arial, sans-serif;
 }
 
-h1 {
-    color: blue;
+div {
+    background-color: white;
+    width: 60%;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+h1, h2 {
     text-align: center;
 }
 
 p {
-    color: #333;
-    font-size: 18px;
     text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    display: block;
+    margin: 10px auto;
 }
