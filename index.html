@@ -3,8 +3,8 @@
 <head>
     <title>My First Website</title>
     <link rel="stylesheet" href="style.css">
-
 </head>
+
 <body>
 
     <div>
@@ -21,8 +21,14 @@
         <h2>Contact</h2>
         <input type="text" placeholder="Enter your name">
         <br><br>
-        <button>Submit</button>
+        <button onclick="sayHello()">Click Me</button>
     </div>
+
+    <script>
+        function sayHello() {
+            alert("Welcome to my first website!");
+        }
+    </script>
 
 </body>
 </html>
