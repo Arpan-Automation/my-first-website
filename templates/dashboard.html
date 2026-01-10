@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Arpan Next Zen</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; }
+        .navbar-zen { background: #0f172a; padding: 15px 0; }
+        .zen-header {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .table-card { background: white; border-radius: 20px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .avatar {
+            width: 45px; height: 45px; background: #e2e8f0; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a;
+        }
+        .status-badge { background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar-zen mb-5">
+    <div class="container d-flex justify-content-between align-items-center">
+        <span class="text-white fw-bold fs-4">ARPAN <span class="text-info">ZEN</span></span>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm">Sign Out</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="zen-header mb-5">
+        <h1 class="fw-bold">Welcome, {{ name }}!</h1>
+        <p class="opacity-75">Arpan Automation Next Zen HRMS System Online</p>
+    </div>
+
+    <div class="table-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Identity Directory</h4>
+            <span class="badge bg-dark">{{ users|length }} Total Users</span>
+        </div>
+
+        <table class="table align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th class="border-0">Member Profile</th>
+                    <th class="border-0">Role</th>
+                    <th class="border-0">Status</th>
+                    <th class="border-0 text-end">Management</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar me-3">{{ user.username[0].upper() }}</div>
+                            <div>
+                                <div class="fw-bold text-dark">{{ user.username }}</div>
+                                <small class="text-muted">ID: {{ user.id + 1000 }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="text-muted">Automation QA</span></td>
+                    <td><span class="status-badge">ONLINE</span></td>
+                    <td class="text-end">
+                        <a href="{{ url_for('delete_user', id=user.id) }}" 
+                           class="btn btn-sm btn-link text-danger text-decoration-none fw-bold"
+                           onclick="return confirm('Purge user data?')">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
