@@ -4,8 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
-app = Flask(__name__, template_folder='templates', static_folder='static')
-app.config['SECRET_KEY'] = 'arpan-automation-2026-ultra'
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'arpan_professional_2026'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, 'users.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -33,13 +33,20 @@ def home():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        hashed = generate_password_hash(request.form['password'])
-        new_user = User(username=request.form['username'], password=hashed)
-        try:
-            db.session.add(new_user); db.session.commit()
-            flash('Registration Successful!', 'success')
-            return redirect(url_for('home'))
-        except: flash('User ID already exists!', 'danger')
+        username = request.form['username']
+        password = request.form['password']
+        existing_user = User.query.filter_by(username=username).first()
+        
+        if existing_user:
+            flash('This Username is already registered. Please login.', 'danger')
+            return render_template('signup.html') # Error ab signup page par hi rahega
+        
+        hashed = generate_password_hash(password)
+        new_user = User(username=username, password=hashed)
+        db.session.add(new_user)
+        db.session.commit() # Data save confirmed
+        flash('Account created! Please login.', 'success')
+        return redirect(url_for('home'))
     return render_template('signup.html')
 
 @app.route('/login', methods=['POST'])
@@ -48,7 +55,7 @@ def login():
     if user and check_password_hash(user.password, request.form['password']):
         session['user'] = user.username
         return redirect(url_for('dashboard'))
-    flash('Access Denied: Invalid Credentials', 'danger')
+    flash('Invalid username or password.', 'danger')
     return redirect(url_for('home'))
 
 @app.route('/dashboard')
@@ -61,18 +68,23 @@ def dashboard():
 def add_employee():
     if 'user' in session:
         new_emp = Employee(name=request.form['name'], email=request.form['email'], position=request.form['position'])
-        db.session.add(new_emp); db.session.commit()
+        db.session.add(new_emp)
+        db.session.commit() # Employee save confirmed
     return redirect(url_for('dashboard'))
 
 @app.route('/delete/<int:id>')
 def delete(id):
     if 'user' in session:
-        emp = Employee.query.get(id); db.session.delete(emp); db.session.commit()
+        emp = Employee.query.get(id)
+        if emp:
+            db.session.delete(emp)
+            db.session.commit()
     return redirect(url_for('dashboard'))
 
 @app.route('/logout')
 def logout():
-    session.pop('user', None); return redirect(url_for('home'))
+    session.pop('user', None)
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(debug=True)
