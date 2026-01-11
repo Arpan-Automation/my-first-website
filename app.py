@@ -4,9 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
-
 app = Flask(__name__, template_folder='templates')
-app.config['SECRET_KEY'] = 'premium-zen-key-2026'
+app.config['SECRET_KEY'] = 'ultimate-zen-2026'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, 'users.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -39,9 +38,9 @@ def signup():
         try:
             db.session.add(new_user)
             db.session.commit()
-            flash('Account Created! Login now.', 'success')
+            flash('Success! Account created.', 'success')
             return redirect(url_for('home'))
-        except: flash('User already exists!', 'danger')
+        except: flash('Error: User exists.', 'danger')
     return render_template('signup.html')
 
 @app.route('/login', methods=['POST'])
@@ -65,7 +64,6 @@ def add_employee():
         new_emp = Employee(name=request.form['name'], email=request.form['email'], position=request.form['position'])
         db.session.add(new_emp)
         db.session.commit()
-        flash('Employee Added!', 'success')
     return redirect(url_for('dashboard'))
 
 @app.route('/delete/<int:id>')
