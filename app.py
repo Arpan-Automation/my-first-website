@@ -1,31 +1,41 @@
+import os
 from flask import Flask, render_template, redirect, url_for, request, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key_here' # Session ke liye zaroori hai
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+# Path define kar rahe hain taaki Render ko templates folder mil jaye
+base_dir = os.path.abspath(os.path.dirname(__file__))
+
+app = Flask(__name__, 
+            template_folder=os.path.join(base_dir, 'templates'))
+
+app.config['SECRET_KEY'] = 'next-zen-secret-key-123'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, 'users.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 
-# 1. User Table (Login/Signup ke liye)
+# --- Models ---
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
 
-# 2. Employee Table (Management ke liye)
 class Employee(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     position = db.Column(db.String(100), nullable=False)
 
-# Database Create
+# Database Setup
 with app.app_context():
     db.create_all()
 
+# --- Routes ---
 @app.route('/')
 def home():
+    if 'user' in session:
+        return redirect(url_for('dashboard'))
     return render_template('login.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -50,7 +60,7 @@ def login():
     pwd = request.form['password']
     found_user = User.query.filter_by(username=user).first()
     if found_user and check_password_hash(found_user.password, pwd):
-        session['user'] = user # Session mein user save kiya
+        session['user'] = user
         return redirect(url_for('dashboard'))
     else:
         flash('Invalid Login Credentials', 'danger')
@@ -59,7 +69,7 @@ def login():
 @app.route('/dashboard')
 def dashboard():
     if 'user' in session:
-        employees = Employee.query.all() # Saare employees fetch kiye
+        employees = Employee.query.all()
         return render_template('dashboard.html', user=session['user'], employees=employees)
     return redirect(url_for('home'))
 
@@ -67,8 +77,6 @@ def dashboard():
 def logout():
     session.pop('user', None)
     return redirect(url_for('home'))
-
-# --- Employee Management Routes ---
 
 @app.route('/add_employee', methods=['POST'])
 def add_employee():
@@ -79,6 +87,7 @@ def add_employee():
         new_emp = Employee(name=name, email=email, position=pos)
         db.session.add(new_emp)
         db.session.commit()
+        flash('Employee Added Successfully!', 'success')
         return redirect(url_for('dashboard'))
     return redirect(url_for('home'))
 
@@ -86,8 +95,10 @@ def add_employee():
 def delete_employee(id):
     if 'user' in session:
         emp = Employee.query.get(id)
-        db.session.delete(emp)
-        db.session.commit()
+        if emp:
+            db.session.delete(emp)
+            db.session.commit()
+            flash('Employee Deleted!', 'warning')
     return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':
