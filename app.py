@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__, template_folder='templates')
-app.config['SECRET_KEY'] = 'ultimate-zen-2026'
+app.config['SECRET_KEY'] = 'next-gen-cyber-2059'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, 'users.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -33,14 +33,12 @@ def home():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        hashed_pwd = generate_password_hash(request.form['password'])
-        new_user = User(username=request.form['username'], password=hashed_pwd)
+        hashed = generate_password_hash(request.form['password'])
+        new_user = User(username=request.form['username'], password=hashed)
         try:
-            db.session.add(new_user)
-            db.session.commit()
-            flash('Success! Account created.', 'success')
+            db.session.add(new_user); db.session.commit()
             return redirect(url_for('home'))
-        except: flash('Error: User exists.', 'danger')
+        except: return "User already exists!"
     return render_template('signup.html')
 
 @app.route('/login', methods=['POST'])
@@ -49,8 +47,7 @@ def login():
     if user and check_password_hash(user.password, request.form['password']):
         session['user'] = user.username
         return redirect(url_for('dashboard'))
-    flash('Invalid credentials!', 'danger')
-    return redirect(url_for('home'))
+    return "Invalid Credentials"
 
 @app.route('/dashboard')
 def dashboard():
@@ -62,22 +59,18 @@ def dashboard():
 def add_employee():
     if 'user' in session:
         new_emp = Employee(name=request.form['name'], email=request.form['email'], position=request.form['position'])
-        db.session.add(new_emp)
-        db.session.commit()
+        db.session.add(new_emp); db.session.commit()
     return redirect(url_for('dashboard'))
 
 @app.route('/delete/<int:id>')
 def delete(id):
     if 'user' in session:
-        emp = Employee.query.get(id)
-        db.session.delete(emp)
-        db.session.commit()
+        emp = Employee.query.get(id); db.session.delete(emp); db.session.commit()
     return redirect(url_for('dashboard'))
 
 @app.route('/logout')
 def logout():
-    session.pop('user', None)
-    return redirect(url_for('home'))
+    session.pop('user', None); return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(debug=True)
