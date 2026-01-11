@@ -1,37 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>Dashboard | Next Gen</title>
+    <meta charset="UTF-8"><title>Control Center | Arpan Automation</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: #05070a; color: #fff; font-family: 'Orbitron', sans-serif; }
-        .cyber-nav { background: rgba(10, 15, 25, 0.9); border-bottom: 1px solid #00f2ff; padding: 15px 0; }
-        .cyber-card { background: rgba(10, 15, 25, 0.7); border: 1px solid #333; border-radius: 10px; padding: 25px; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
-        .table { color: #fff; border-color: #333; }
-        .logo-text { font-weight: 900; background: linear-gradient(to right, #00f2ff, #7000ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .status-neon { color: #00f2ff; text-shadow: 0 0 10px #00f2ff; font-size: 0.8rem; }
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Share+Tech+Mono&display=swap');
+        body { background: #020617; color: #fff; font-family: 'Share Tech Mono', monospace; }
+        .header { border-bottom: 2px solid #0ea5e9; background: rgba(15, 23, 42, 0.9); padding: 15px 0; }
+        .brand-logo { font-family: 'Syncopate', sans-serif; font-size: 1.1rem; color: #fff; text-shadow: 0 0 8px #0ea5e9; }
+        .cyber-card { background: rgba(15, 23, 42, 0.6); border: 1px solid #1e293b; border-left: 4px solid #0ea5e9; padding: 20px; }
+        .table { color: #00f2ff; border-color: #1e293b; }
+        .btn-cyber { background: transparent; border: 1px solid #0ea5e9; color: #0ea5e9; }
+        .btn-cyber:hover { background: #0ea5e9; color: #000; }
     </style>
 </head>
 <body>
-<nav class="cyber-nav mb-5"><div class="container d-flex justify-content-between">
-    <div class="logo-text">ARPAN AUTOMATION NEXT GEN</div>
-    <div class="status-neon">SYSTEM ONLINE // USER: {{ user }} // <a href="/logout" class="text-danger">LOGOUT</a></div>
-</div></nav>
+<div class="header mb-5"><div class="container d-flex justify-content-between align-items-center">
+    <div class="brand-logo">ARPAN AUTOMATION <span class="small opacity-50">NEXT GEN</span></div>
+    <div class="small text-info">STATUS: ONLINE // AGENT: {{ user }} // <a href="/logout" class="text-danger">LOGOUT</a></div>
+</div></div>
 
 <div class="container"><div class="row">
     <div class="col-md-4 mb-4"><div class="cyber-card">
-        <h6 class="text-info mb-4">DEPLOY NEW AGENT</h6>
+        <h6 class="text-info mb-3">> ADD NEW ENTITY</h6>
         <form action="/add_employee" method="POST">
-            <input type="text" name="name" class="form-control mb-2 bg-dark text-white border-secondary" placeholder="Agent Name">
-            <input type="email" name="email" class="form-control mb-2 bg-dark text-white border-secondary" placeholder="Neural Mail">
-            <input type="text" name="position" class="form-control mb-3 bg-dark text-white border-secondary" placeholder="Rank/Position">
-            <button class="btn btn-outline-info w-100">COMMIT TO DATABASE</button>
+            <input type="text" name="name" class="form-control mb-2 bg-black text-info border-secondary" placeholder="NAME" required>
+            <input type="email" name="email" class="form-control mb-2 bg-black text-info border-secondary" placeholder="ENCRYPTED EMAIL" required>
+            <input type="text" name="position" class="form-control mb-3 bg-black text-info border-secondary" placeholder="RANK/ROLE" required>
+            <button class="btn btn-cyber w-100">COMMIT DATA</button>
         </form>
     </div></div>
     <div class="col-md-8"><div class="cyber-card">
-        <h6 class="text-info mb-4">ACTIVE DATABASE ENTITIES</h6>
-        <table class="table table-dark table-hover">
-            <thead><tr><th>ENTITY</th><th>RANK</th><th>ID</th><th>ACTION</th></tr></thead>
+        <h6 class="text-info mb-3">> ACTIVE DATABASE ENTITIES</h6>
+        <table class="table">
+            <thead><tr><th>NAME</th><th>RANK</th><th>MAIL_ID</th><th>ACTION</th></tr></thead>
             <tbody>
                 {% for emp in employees %}
                 <tr><td>{{emp.name}}</td><td>{{emp.position}}</td><td>{{emp.email}}</td>

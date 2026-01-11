@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__, template_folder='templates')
-app.config['SECRET_KEY'] = 'next-gen-cyber-2059'
+app.config['SECRET_KEY'] = 'arpan-automation-2059-v1'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, 'users.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -38,7 +38,7 @@ def signup():
         try:
             db.session.add(new_user); db.session.commit()
             return redirect(url_for('home'))
-        except: return "User already exists!"
+        except: return "User ID already exists!"
     return render_template('signup.html')
 
 @app.route('/login', methods=['POST'])
@@ -47,7 +47,7 @@ def login():
     if user and check_password_hash(user.password, request.form['password']):
         session['user'] = user.username
         return redirect(url_for('dashboard'))
-    return "Invalid Credentials"
+    return "ACCESS DENIED: Invalid Credentials"
 
 @app.route('/dashboard')
 def dashboard():
