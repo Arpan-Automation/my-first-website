@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__, template_folder='templates')
-app.config['SECRET_KEY'] = 'arpan-automation-2059-v1'
+app.config['SECRET_KEY'] = 'arpan-automation-next-gen-2026'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, 'users.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -37,8 +37,9 @@ def signup():
         new_user = User(username=request.form['username'], password=hashed)
         try:
             db.session.add(new_user); db.session.commit()
+            flash('Registration Successful!', 'success')
             return redirect(url_for('home'))
-        except: return "User ID already exists!"
+        except: flash('Username already exists!', 'danger')
     return render_template('signup.html')
 
 @app.route('/login', methods=['POST'])
@@ -47,7 +48,8 @@ def login():
     if user and check_password_hash(user.password, request.form['password']):
         session['user'] = user.username
         return redirect(url_for('dashboard'))
-    return "ACCESS DENIED: Invalid Credentials"
+    flash('Invalid Username or Password', 'danger')
+    return redirect(url_for('home'))
 
 @app.route('/dashboard')
 def dashboard():
@@ -60,12 +62,14 @@ def add_employee():
     if 'user' in session:
         new_emp = Employee(name=request.form['name'], email=request.form['email'], position=request.form['position'])
         db.session.add(new_emp); db.session.commit()
+        flash('Employee Added Successfully!', 'success')
     return redirect(url_for('dashboard'))
 
 @app.route('/delete/<int:id>')
 def delete(id):
     if 'user' in session:
         emp = Employee.query.get(id); db.session.delete(emp); db.session.commit()
+        flash('Employee Deleted!', 'info')
     return redirect(url_for('dashboard'))
 
 @app.route('/logout')

@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>Control Center | Arpan Automation</title>
+    <meta charset="UTF-8"><title>Dashboard | Arpan Automation</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Share+Tech+Mono&display=swap');
-        body { background: #020617; color: #fff; font-family: 'Share Tech Mono', monospace; }
-        .header { border-bottom: 2px solid #0ea5e9; background: rgba(15, 23, 42, 0.9); padding: 15px 0; }
-        .brand-logo { font-family: 'Syncopate', sans-serif; font-size: 1.1rem; color: #fff; text-shadow: 0 0 8px #0ea5e9; }
-        .cyber-card { background: rgba(15, 23, 42, 0.6); border: 1px solid #1e293b; border-left: 4px solid #0ea5e9; padding: 20px; }
-        .table { color: #00f2ff; border-color: #1e293b; }
-        .btn-cyber { background: transparent; border: 1px solid #0ea5e9; color: #0ea5e9; }
-        .btn-cyber:hover { background: #0ea5e9; color: #000; }
+        body { background: #0f172a; color: #f1f5f9; }
+        .header { background: #1e293b; border-bottom: 1px solid #334155; padding: 20px 0; }
+        .card-custom { background: #1e293b; border-radius: 15px; border: 1px solid #334155; padding: 25px; }
+        .table { color: #f1f5f9; border-color: #334155; }
+        .form-control { background: #0f172a; border: 1px solid #334155; color: white; }
+        .btn-add { background: #38bdf8; border: none; font-weight: 600; color: #0f172a; }
     </style>
 </head>
 <body>
 <div class="header mb-5"><div class="container d-flex justify-content-between align-items-center">
-    <div class="brand-logo">ARPAN AUTOMATION <span class="small opacity-50">NEXT GEN</span></div>
-    <div class="small text-info">STATUS: ONLINE // AGENT: {{ user }} // <a href="/logout" class="text-danger">LOGOUT</a></div>
+    <h4 class="fw-bold m-0">ARPAN AUTOMATION <span class="text-info">NEXT GEN</span></h4>
+    <div><span class="me-3 opacity-75 small">User: {{ user }}</span><a href="/logout" class="btn btn-sm btn-outline-danger">Logout</a></div>
 </div></div>
 
 <div class="container"><div class="row">
-    <div class="col-md-4 mb-4"><div class="cyber-card">
-        <h6 class="text-info mb-3">> ADD NEW ENTITY</h6>
+    <div class="col-md-4 mb-4"><div class="card-custom">
+        <h5 class="mb-4 fw-bold">Add New Employee</h5>
         <form action="/add_employee" method="POST">
-            <input type="text" name="name" class="form-control mb-2 bg-black text-info border-secondary" placeholder="NAME" required>
-            <input type="email" name="email" class="form-control mb-2 bg-black text-info border-secondary" placeholder="ENCRYPTED EMAIL" required>
-            <input type="text" name="position" class="form-control mb-3 bg-black text-info border-secondary" placeholder="RANK/ROLE" required>
-            <button class="btn btn-cyber w-100">COMMIT DATA</button>
+            <input type="text" name="name" class="form-control mb-3" placeholder="Full Name" required>
+            <input type="email" name="email" class="form-control mb-3" placeholder="Email Address" required>
+            <input type="text" name="position" class="form-control mb-4" placeholder="Job Position" required>
+            <button class="btn btn-add w-100 py-2">Save Employee</button>
         </form>
     </div></div>
-    <div class="col-md-8"><div class="cyber-card">
-        <h6 class="text-info mb-3">> ACTIVE DATABASE ENTITIES</h6>
-        <table class="table">
-            <thead><tr><th>NAME</th><th>RANK</th><th>MAIL_ID</th><th>ACTION</th></tr></thead>
-            <tbody>
-                {% for emp in employees %}
-                <tr><td>{{emp.name}}</td><td>{{emp.position}}</td><td>{{emp.email}}</td>
-                <td><a href="/delete/{{emp.id}}" class="text-danger small">TERMINATE</a></td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="col-md-8"><div class="card-custom">
+        <h5 class="mb-4 fw-bold">Employee Directory</h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="text-info"><tr><th>Name</th><th>Position</th><th>Email</th><th>Action</th></tr></thead>
+                <tbody>
+                    {% for emp in employees %}
+                    <tr><td>{{emp.name}}</td><td>{{emp.position}}</td><td>{{emp.email}}</td>
+                    <td><a href="/delete/{{emp.id}}" class="btn btn-sm btn-outline-danger">Delete</a></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div></div>
 </div></div>
 </body>
